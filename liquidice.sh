@@ -9,12 +9,12 @@ set -e
 install_dependencies() {
     echo "Updating package list and installing system dependencies..."
     sudo apt update -y && sudo apt upgrade -y
-    # Install necessary build tools and libraries
+    # Correcting package names and removing unavailable packages
     sudo apt install -y build-essential m4 curl opam git pkg-config libpcre3-dev \
     libgmp-dev libmad0-dev libmp3lame-dev libvorbis-dev libopus-dev \
-    libspeex-dev libtheora-dev libssl-dev libffmpeg-dev libflac-dev \
-    libfdk-aac-dev libsamplerate-dev libmagic-dev libtag1-dev \
-    libportaudio-dev alsa-utils
+    libspeex-dev libtheora-dev libssl-dev libflac-dev \
+    libfdk-aac-dev libsamplerate0-dev libmagic-dev libtag1-dev \
+    alsa-utils
 }
 
 # Function to create icecast user and group
