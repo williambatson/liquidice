@@ -16,7 +16,7 @@ This script installs and sets up the following:
 icecast2
 LiquidSoap via opam plus liquidsoap modules
 systat
-creates non-sudo user 'icecast'
+creates user  'icecast' runing opam and liquidsoap as non root user: icecast
 creates home directory at /home/icecast
 
 
