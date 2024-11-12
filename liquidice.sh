@@ -16,11 +16,13 @@ install_dependencies() {
     libspeex-dev libtheora-dev libopus-dev libfdk-aac-dev alsa-utils
 }
 
-# Function to create icecast user and group
+# Function to create icecast user and prompt for password
 create_icecast_user() {
     echo "Creating icecast user and group..."
     sudo groupadd -f icecast
     sudo useradd -m -g icecast -s /usr/sbin/nologin icecast || echo "User icecast already exists."
+    echo "Please set a password for the 'icecast' user:"
+    sudo passwd icecast
 }
 
 # Function to set up /home/icecast directory with correct permissions
@@ -45,8 +47,7 @@ install_liquidsoap_via_opam() {
         opam update --yes
         opam switch create 4.12.0 --yes || opam switch set 4.12.0 --yes
         eval $(opam env)
-        opam install depext --yes
-        opam depext install liquidsoap --yes
+        opam install liquidsoap --depext-only --yes
         opam install liquidsoap --yes
     '
 }
@@ -69,7 +70,7 @@ main() {
     # Step 2: Configure non-interactive installs for Icecast2
     configure_non_interactive
 
-    # Step 3: Create the icecast user and group
+    # Step 3: Create the icecast user and prompt for password
     create_icecast_user
 
     # Step 4: Set up the necessary directories with permissions
