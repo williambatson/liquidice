@@ -7,21 +7,20 @@ set -e
 
 # Function to update and install necessary dependencies
 install_dependencies() {
-    echo "Updating package list and installing system dependencies..."
+    echo "Updating package list and installing minimal dependencies..."
     sudo apt update -y && sudo apt upgrade -y
-    # Correcting package names and removing unavailable packages
-    sudo apt install -y build-essential m4 curl opam git pkg-config libpcre3-dev \
-    libgmp-dev libmad0-dev libmp3lame-dev libvorbis-dev libopus-dev \
-    libspeex-dev libtheora-dev libssl-dev libflac-dev \
-    libfdk-aac-dev libsamplerate0-dev libmagic-dev libtag1-dev \
-    alsa-utils
+    # Install necessary build tools and libraries for OPAM installation
+    sudo apt install -y build-essential m4 curl opam git pkg-config \
+    libpcre3-dev libgmp-dev libssl-dev libflac-dev libvorbis-dev \
+    libmad0-dev libmp3lame-dev libtag1-dev libsamplerate0-dev \
+    libspeex-dev libtheora-dev libopus-dev libfdk-aac-dev alsa-utils
 }
 
 # Function to create icecast user and group
 create_icecast_user() {
     echo "Creating icecast user and group..."
     sudo groupadd -f icecast
-    sudo useradd -m -g icecast -s /usr/sbin/nologin icecast
+    sudo useradd -m -g icecast -s /usr/sbin/nologin icecast || echo "User icecast already exists."
 }
 
 # Function to set up /home/icecast directory with correct permissions
@@ -39,13 +38,15 @@ install_liquidsoap_via_opam() {
     
     # Switch to icecast user and initialize OPAM
     sudo -u icecast -H sh -c '
-        opam init --bare --yes
+        if [ ! -d "$HOME/.opam" ]; then
+            opam init --bare --yes
+        fi
         eval $(opam env)
         opam update --yes
         opam switch create 4.12.0 --yes || opam switch set 4.12.0 --yes
         eval $(opam env)
         opam install depext --yes
-        opam depext liquidsoap --yes
+        opam depext install liquidsoap --yes
         opam install liquidsoap --yes
     '
 }
@@ -62,7 +63,7 @@ configure_non_interactive() {
 main() {
     echo "Starting installation of Icecast2, Liquidsoap (via OPAM), and Sysstat..."
 
-    # Step 1: Update and install system dependencies
+    # Step 1: Update and install minimal system dependencies
     install_dependencies
 
     # Step 2: Configure non-interactive installs for Icecast2
