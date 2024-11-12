@@ -49,7 +49,7 @@ setup_directories() {
 
 # Function to configure and install Liquidsoap via OPAM
 install_liquidsoap_via_opam() {
-    echo "Setting up OPAM environment and installing Liquidsoap for the 'icecast' user..."
+    echo "Setting up OPAM environment and installing Liquidsoap with additional packages for the 'icecast' user..."
     
     # Switch to icecast user and initialize OPAM
     sudo -u icecast -H sh -c '
@@ -60,7 +60,8 @@ install_liquidsoap_via_opam() {
         opam update --yes
         opam switch create 4.12.0 --yes || opam switch set 4.12.0 --yes
         eval $(opam env)
-        opam install liquidsoap --yes
+        # Install Liquidsoap and recommended additional packages
+        opam install liquidsoap mad lame taglib cry --yes
     '
 }
 
@@ -91,14 +92,14 @@ main() {
     # Step 5: Set up the necessary directories with permissions
     setup_directories
 
-    # Step 6: Install Liquidsoap via OPAM
+    # Step 6: Install Liquidsoap via OPAM with additional packages
     install_liquidsoap_via_opam
 
     # Step 7: Revoke temporary sudo privileges
     revoke_sudo_privileges
 
     echo "Installation and setup complete!"
-    echo "Icecast2, Liquidsoap (via OPAM), and Sysstat have been installed, and required directories and users have been set up."
+    echo "Icecast2, Liquidsoap (via OPAM), and Sysstat have been installed, including additional Liquidsoap packages."
 }
 
 # Execute the main function
