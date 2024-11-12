@@ -1,4 +1,4 @@
-# liquidice v2.0 - Setpup using Ubuntu Linux or equivelent
+# liquidice v2.1 - Setpup using Ubuntu Linux or equivelent
 Running the Script
 
     Save the script to a file named liquidice.sh.
@@ -23,3 +23,5 @@ creates home directory at /home/icecast
 change log......................
 2.0.0
 update liquidsoap install to use opam instead of apt repository for latest version and updates
+2.1.0
+added Liquidsoap dependencies cry, mad, lame, mm, taglib
