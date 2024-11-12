@@ -1,4 +1,4 @@
-# liquidice - Setpup using Ubuntu Linux or equivelent
+# liquidice v2.0 - Setpup using Ubuntu Linux or equivelent
 Running the Script
 
     Save the script to a file named liquidice.sh.
@@ -14,7 +14,12 @@ sudo ./liquidice.sh
 
 This script installs and sets up the following:
 icecast2
-LiquidSoap
+LiquidSoap via opam plus liquidsoap modules
 systat
 creates non-sudo user 'icecast'
 creates home directory at /home/icecast
+
+
+change log......................
+2.0.0
+update liquidsoap install to use opam instead of apt repository for latest version and updates
