@@ -13,7 +13,8 @@ install_dependencies() {
     sudo apt install -y build-essential m4 curl opam git pkg-config \
     libpcre3-dev libgmp-dev libssl-dev libflac-dev libvorbis-dev \
     libmad0-dev libmp3lame-dev libtag1-dev libsamplerate0-dev \
-    libspeex-dev libtheora-dev libopus-dev libfdk-aac-dev alsa-utils
+    libspeex-dev libtheora-dev libopus-dev libfdk-aac-dev alsa-utils \
+    libcurl4-gnutls-dev
 }
 
 # Function to create icecast user and prompt for password
@@ -23,6 +24,18 @@ create_icecast_user() {
     sudo useradd -m -g icecast -s /usr/sbin/nologin icecast || echo "User icecast already exists."
     echo "Please set a password for the 'icecast' user:"
     sudo passwd icecast
+}
+
+# Function to temporarily allow icecast user to run sudo without password for apt-get
+grant_sudo_privileges() {
+    echo "Granting temporary passwordless sudo privileges for apt-get to icecast user..."
+    echo "icecast ALL=(ALL) NOPASSWD: /usr/bin/apt-get" | sudo tee /etc/sudoers.d/icecast-apt
+}
+
+# Function to remove temporary sudo privileges
+revoke_sudo_privileges() {
+    echo "Revoking temporary sudo privileges from icecast user..."
+    sudo rm /etc/sudoers.d/icecast-apt
 }
 
 # Function to set up /home/icecast directory with correct permissions
@@ -47,7 +60,6 @@ install_liquidsoap_via_opam() {
         opam update --yes
         opam switch create 4.12.0 --yes || opam switch set 4.12.0 --yes
         eval $(opam env)
-        opam install liquidsoap --depext-only --yes
         opam install liquidsoap --yes
     '
 }
@@ -73,11 +85,17 @@ main() {
     # Step 3: Create the icecast user and prompt for password
     create_icecast_user
 
-    # Step 4: Set up the necessary directories with permissions
+    # Step 4: Grant temporary sudo privileges for apt-get
+    grant_sudo_privileges
+
+    # Step 5: Set up the necessary directories with permissions
     setup_directories
 
-    # Step 5: Install Liquidsoap via OPAM
+    # Step 6: Install Liquidsoap via OPAM
     install_liquidsoap_via_opam
+
+    # Step 7: Revoke temporary sudo privileges
+    revoke_sudo_privileges
 
     echo "Installation and setup complete!"
     echo "Icecast2, Liquidsoap (via OPAM), and Sysstat have been installed, and required directories and users have been set up."
