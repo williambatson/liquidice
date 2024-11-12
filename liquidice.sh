@@ -5,12 +5,12 @@
 # Exit immediately if a command exits with a non-zero status
 set -e
 
-# Function to update and install necessary dependencies
+# Function to update and install necessary dependencies, including Icecast2
 install_dependencies() {
-    echo "Updating package list and installing minimal dependencies..."
+    echo "Updating package list and installing minimal dependencies, including Icecast2..."
     sudo apt update -y && sudo apt upgrade -y
-    # Install necessary build tools and libraries for OPAM installation
-    sudo apt install -y build-essential m4 curl opam git pkg-config \
+    # Install Icecast2 and necessary build tools and libraries for OPAM installation
+    sudo apt install -y icecast2 build-essential m4 curl opam git pkg-config \
     libpcre3-dev libgmp-dev libssl-dev libflac-dev libvorbis-dev \
     libmad0-dev libmp3lame-dev libtag1-dev libsamplerate0-dev \
     libspeex-dev libtheora-dev libopus-dev libfdk-aac-dev alsa-utils \
@@ -77,7 +77,7 @@ configure_non_interactive() {
 main() {
     echo "Starting installation of Icecast2, Liquidsoap (via OPAM), and Sysstat..."
 
-    # Step 1: Update and install minimal system dependencies
+    # Step 1: Update and install minimal system dependencies, including Icecast2
     install_dependencies
 
     # Step 2: Configure non-interactive installs for Icecast2
